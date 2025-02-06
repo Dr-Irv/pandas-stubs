@@ -253,15 +253,17 @@ if sys.version_info >= (3, 12):
         def __getitem__(self, key: Hashable) -> Series: ...
 
 else:
+    from pandas.core.series import UnknownSeries
+
     class _GetItemHack:
         @overload
-        def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> UnknownSeries: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         @overload
         def __getitem__(  # pyright: ignore[reportOverlappingOverload]
             self, key: Iterable[Hashable] | slice
         ) -> Self: ...
         @overload
-        def __getitem__(self, key: Hashable) -> Series: ...
+        def __getitem__(self, key: Hashable) -> UnknownSeries: ...
 
 class DataFrame(NDFrame, OpsMixin, _GetItemHack):
 

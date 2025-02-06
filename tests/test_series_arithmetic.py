@@ -1,10 +1,15 @@
 """Test module for arithmetic operations on Series."""
 
+from typing import TYPE_CHECKING
+
 import numpy as np
 import pandas as pd
 from typing_extensions import assert_type
 
 from tests import check
+
+if TYPE_CHECKING:
+    pass
 
 
 def test_element_wise_int_int() -> None:
@@ -214,7 +219,8 @@ def test_element_wise_unknown_int() -> None:
     s = pd.Series([0, 1, -105])
     s2 = df["a"]
 
-    check(assert_type(s + s2, pd.Series), pd.Series)
+    assert_type(s + s, pd.Series[int])
+    check(assert_type(s + s2, "UnknownSeries"), pd.Series)
     check(assert_type(s.add(s2, fill_value=0), pd.Series), pd.Series)
 
     check(assert_type(s - s2, pd.Series), pd.Series)
@@ -250,7 +256,7 @@ def test_element_wise_float_unknown() -> None:
     s = pd.Series([1.3, 2.5, 4.5])
     s2 = df["a"]
 
-    check(assert_type(s + s2, pd.Series), pd.Series)
+    check(assert_type(s + s2, "UnknownSeries"), pd.Series)
     check(assert_type(s.add(s2, fill_value=0), pd.Series), pd.Series)
 
     check(assert_type(s - s2, pd.Series), pd.Series)
@@ -261,6 +267,11 @@ def test_element_wise_float_unknown() -> None:
 
     check(assert_type(s / s2, "pd.Series[float]"), pd.Series)
     check(assert_type(s.div(s2, fill_value=0), "pd.Series[float]"), pd.Series)
+
+    def foobar(s: pd.Series):
+        assert isinstance(s, pd.Series)
+
+    foobar(s2)
 
 
 def test_element_wise_unknown_float() -> None:
